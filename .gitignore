@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data artifacts
+*.pkl
+*.joblib
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local data (keep folder structure with .gitkeep)
+data/raw/*
+data/processed/*
+data/preprocessed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!data/preprocessed/.gitkeep
+
+# Results
+results/figures/*
+!results/figures/.gitkeep
+
+# References
+references/*.pdf

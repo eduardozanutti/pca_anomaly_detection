@@ -1,0 +1,51 @@
+dataset:
+  name: tennessee_eastman_mode1
+  time_column: Time
+  time_unit: hours
+  notes:
+    - "This dataset uses columns named xmv-1..xmv-41, but these are TE measured process variables in this release."
+    - "Use this mapping to standardize feature names before modeling."
+
+column_name_map:
+  Time: time_hours
+  xmv-1: a_feed_stream_1_kscmh
+  xmv-2: d_feed_stream_2_kgph
+  xmv-3: e_feed_stream_3_kgph
+  xmv-4: a_and_c_feed_stream_4_kscmh
+  xmv-5: recycle_flow_kscmh
+  xmv-6: reactor_feed_rate_kscmh
+  xmv-7: reactor_pressure_kpa_gauge
+  xmv-8: reactor_level_pct
+  xmv-9: reactor_temperature_deg_c
+  xmv-10: purge_rate_kscmh
+  xmv-11: product_separator_temperature_deg_c
+  xmv-12: product_separator_level_pct
+  xmv-13: product_separator_pressure_kpa_gauge
+  xmv-14: product_separator_underflow_m3ph
+  xmv-15: stripper_level_pct
+  xmv-16: stripper_pressure_kpa_gauge
+  xmv-17: stripper_underflow_m3ph
+  xmv-18: stripper_temperature_deg_c
+  xmv-19: stripper_steam_flow_kgph
+  xmv-20: compressor_work_kw
+  xmv-21: reactor_coolant_temperature_deg_c
+  xmv-22: separator_coolant_temperature_deg_c
+  xmv-23: reactor_feed_component_a_mol_pct
+  xmv-24: reactor_feed_component_b_mol_pct
+  xmv-25: reactor_feed_component_c_mol_pct
+  xmv-26: reactor_feed_component_d_mol_pct
+  xmv-27: reactor_feed_component_e_mol_pct
+  xmv-28: reactor_feed_component_f_mol_pct
+  xmv-29: purge_component_a_mol_pct
+  xmv-30: purge_component_b_mol_pct
+  xmv-31: purge_component_c_mol_pct
+  xmv-32: purge_component_d_mol_pct
+  xmv-33: purge_component_e_mol_pct
+  xmv-34: purge_component_f_mol_pct
+  xmv-35: purge_component_g_mol_pct
+  xmv-36: purge_component_h_mol_pct
+  xmv-37: product_component_d_mol_pct
+  xmv-38: product_component_e_mol_pct
+  xmv-39: product_component_f_mol_pct
+  xmv-40: product_component_g_mol_pct
+  xmv-41: product_component_h_mol_pct
