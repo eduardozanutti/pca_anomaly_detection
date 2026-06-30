@@ -1,51 +1,95 @@
 dataset:
-  name: tennessee_eastman_mode1
-  time_column: Time
-  time_unit: hours
+  name: tennessee_eastman_rieth_2017
+  source: "Rieth, Amsel, Tran & Cook (2017) - Harvard Dataverse, doi:10.7910/DVN/6C3JR1"
+  reference: "Downs & Vogel (1993) - A plant-wide industrial process control problem"
   notes:
-    - "This dataset uses columns named xmv-1..xmv-41, but these are TE measured process variables in this release."
-    - "Use this mapping to standardize feature names before modeling."
+    - "xmeas_1..22 = Table 4 (continuous process measurements)."
+    - "xmeas_23..41 = Table 5 (sampled/analyzer measurements: reactor feed, purge gas, product)."
+    - "xmv_1..11 = Table 3 (manipulated variables 1-11). XMV(12) Agitator speed is fixed/not simulated in this dataset, so it has no xmv_12 column."
 
 column_name_map:
-  Time: time_hours
-  xmv-1: a_feed_stream_1_kscmh
-  xmv-2: d_feed_stream_2_kgph
-  xmv-3: e_feed_stream_3_kgph
-  xmv-4: a_and_c_feed_stream_4_kscmh
-  xmv-5: recycle_flow_kscmh
-  xmv-6: reactor_feed_rate_kscmh
-  xmv-7: reactor_pressure_kpa_gauge
-  xmv-8: reactor_level_pct
-  xmv-9: reactor_temperature_deg_c
-  xmv-10: purge_rate_kscmh
-  xmv-11: product_separator_temperature_deg_c
-  xmv-12: product_separator_level_pct
-  xmv-13: product_separator_pressure_kpa_gauge
-  xmv-14: product_separator_underflow_m3ph
-  xmv-15: stripper_level_pct
-  xmv-16: stripper_pressure_kpa_gauge
-  xmv-17: stripper_underflow_m3ph
-  xmv-18: stripper_temperature_deg_c
-  xmv-19: stripper_steam_flow_kgph
-  xmv-20: compressor_work_kw
-  xmv-21: reactor_coolant_temperature_deg_c
-  xmv-22: separator_coolant_temperature_deg_c
-  xmv-23: reactor_feed_component_a_mol_pct
-  xmv-24: reactor_feed_component_b_mol_pct
-  xmv-25: reactor_feed_component_c_mol_pct
-  xmv-26: reactor_feed_component_d_mol_pct
-  xmv-27: reactor_feed_component_e_mol_pct
-  xmv-28: reactor_feed_component_f_mol_pct
-  xmv-29: purge_component_a_mol_pct
-  xmv-30: purge_component_b_mol_pct
-  xmv-31: purge_component_c_mol_pct
-  xmv-32: purge_component_d_mol_pct
-  xmv-33: purge_component_e_mol_pct
-  xmv-34: purge_component_f_mol_pct
-  xmv-35: purge_component_g_mol_pct
-  xmv-36: purge_component_h_mol_pct
-  xmv-37: product_component_d_mol_pct
-  xmv-38: product_component_e_mol_pct
-  xmv-39: product_component_f_mol_pct
-  xmv-40: product_component_g_mol_pct
-  xmv-41: product_component_h_mol_pct
+  # Table 4 - Continuous process measurements (XMEAS 1-22)
+  xmeas_1: a_feed_stream1_kscmh
+  xmeas_2: d_feed_stream2_kg_h
+  xmeas_3: e_feed_stream3_kg_h
+  xmeas_4: a_and_c_feed_stream4_kscmh
+  xmeas_5: recycle_flow_stream8_kscmh
+  xmeas_6: reactor_feed_rate_stream6_kscmh
+  xmeas_7: reactor_pressure_kpa_gauge
+  xmeas_8: reactor_level_pct
+  xmeas_9: reactor_temperature_degc
+  xmeas_10: purge_rate_stream9_kscmh
+  xmeas_11: product_separator_temperature_degc
+  xmeas_12: product_separator_level_pct
+  xmeas_13: product_separator_pressure_kpa_gauge
+  xmeas_14: product_separator_underflow_stream10_m3_h
+  xmeas_15: stripper_level_pct
+  xmeas_16: stripper_pressure_kpa_gauge
+  xmeas_17: stripper_underflow_stream11_m3_h
+  xmeas_18: stripper_temperature_degc
+  xmeas_19: stripper_steam_flow_kg_h
+  xmeas_20: compressor_work_kw
+  xmeas_21: reactor_cooling_water_outlet_temperature_degc
+  xmeas_22: separator_cooling_water_outlet_temperature_degc
+
+  # Table 5 - Reactor feed analysis (stream 6), sampling 0.1h, dead time 0.1h
+  xmeas_23: reactor_feed_a_molpct
+  xmeas_24: reactor_feed_b_molpct
+  xmeas_25: reactor_feed_c_molpct
+  xmeas_26: reactor_feed_d_molpct
+  xmeas_27: reactor_feed_e_molpct
+  xmeas_28: reactor_feed_f_molpct
+
+  # Table 5 - Purge gas analysis (stream 9), sampling 0.1h, dead time 0.1h
+  xmeas_29: purge_gas_a_molpct
+  xmeas_30: purge_gas_b_molpct
+  xmeas_31: purge_gas_c_molpct
+  xmeas_32: purge_gas_d_molpct
+  xmeas_33: purge_gas_e_molpct
+  xmeas_34: purge_gas_f_molpct
+  xmeas_35: purge_gas_g_molpct
+  xmeas_36: purge_gas_h_molpct
+
+  # Table 5 - Product analysis (stream 11), sampling 0.25h, dead time 0.25h
+  xmeas_37: product_d_molpct
+  xmeas_38: product_e_molpct
+  xmeas_39: product_f_molpct
+  xmeas_40: product_g_molpct
+  xmeas_41: product_h_molpct
+
+  # Table 3 - Manipulated variables (XMV 1-11)
+  xmv_1: d_feed_flow_stream2_kg_h
+  xmv_2: e_feed_flow_stream3_kg_h
+  xmv_3: a_feed_flow_stream1_kscmh
+  xmv_4: a_and_c_feed_flow_stream4_kscmh
+  xmv_5: compressor_recycle_valve_pct
+  xmv_6: purge_valve_stream9_pct
+  xmv_7: separator_pot_liquid_flow_stream10_m3_h
+  xmv_8: stripper_liquid_product_flow_stream11_m3_h
+  xmv_9: stripper_steam_valve_pct
+  xmv_10: reactor_cooling_water_flow_m3_h
+  xmv_11: condenser_cooling_water_flow_m3_h
+
+# Table 8 - Process disturbances (Downs & Vogel, 1993)
+fault_description_map:
+  0: normal_operation
+  1: a_c_feed_ratio_b_composition_constant_stream_4
+  2: b_composition_a_c_ratio_constant_stream_4
+  3: d_feed_temperature_stream_2
+  4: reactor_cooling_water_inlet_temperature
+  5: condenser_cooling_water_inlet_temperature
+  6: a_feed_loss_stream_1
+  7: c_header_pressure_loss_reduced_availability_stream_4
+  8: a_b_c_feed_composition_stream_4
+  9: d_feed_temperature_stream_2
+  10: c_feed_temperature_stream_4
+  11: reactor_cooling_water_inlet_temperature
+  12: condenser_cooling_water_inlet_temperature
+  13: reaction_kinetics
+  14: reactor_cooling_water_valve
+  15: condenser_cooling_water_valve
+  16: unknown
+  17: unknown
+  18: unknown
+  19: unknown
+  20: unknown

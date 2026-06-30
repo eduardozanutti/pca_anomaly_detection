@@ -4,124 +4,99 @@ import argparse
 import urllib.request
 from pathlib import Path
 
-import pandas as pd
+# Rieth, C. A., Amsel, B. D., Tran, R., & Cook, M. B. (2017).
+# "Additional Tennessee Eastman Process Simulation Data for Anomaly Detection Evaluation."
+# Harvard Dataverse, doi:10.7910/DVN/6C3JR1
+DATAVERSE_ACCESS_URL = "https://dataverse.harvard.edu/api/access/datafile/{file_id}"
 
-BASE_URL = "https://github.com/mv-per/tennessee-eastman-dataset/raw/main/simulations/mode_1"
+# file_id confirmed via the Dataverse API file listing for the dataset above.
+DATAVERSE_FILES: dict[str, int] = {
+    "TEP_FaultFree_Training.RData": 3031241,
+    "TEP_Faulty_Training.RData": 3031242,
+    "TEP_FaultFree_Testing.RData": 3031240,
+    "TEP_Faulty_Testing.RData": 3031243,
+}
 
-# Curated subset for quick experiments and initial EDA.
-EASY_FAULTS = [1, 2, 6]
-MEDIUM_FAULTS = [10, 14]
-HARD_FAULTS = [18]
+TRAIN_FILES = ["TEP_FaultFree_Training.RData", "TEP_Faulty_Training.RData"]
+TEST_FILES = ["TEP_FaultFree_Testing.RData", "TEP_Faulty_Testing.RData"]
 
 
 def project_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def download_file(url: str, destination: Path) -> None:
+def download_file(file_id: int, destination: Path, *, chunk_size: int = 1 << 20) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
-    with urllib.request.urlopen(url) as response:
-        destination.write_bytes(response.read())
+    url = DATAVERSE_ACCESS_URL.format(file_id=file_id)
+    # Dataverse's S3 redirect rejects the default Python-urllib User-Agent (403).
+    request = urllib.request.Request(url, headers={"User-Agent": "curl/8.0"})
+
+    with urllib.request.urlopen(request) as response:
+        total = response.length or 0
+        downloaded = 0
+        with destination.open("wb") as f:
+            while chunk := response.read(chunk_size):
+                f.write(chunk)
+                downloaded += len(chunk)
+                if total:
+                    pct = downloaded / total * 100
+                    print(f"\r  {destination.name}: {downloaded / 1e6:.1f}/{total / 1e6:.1f} MB ({pct:.0f}%)", end="")
+    print()
 
 
-def convert_xlsx_to_csv(xlsx_path: Path, csv_path: Path) -> None:
-    df = pd.read_excel(xlsx_path)
-    csv_path.parent.mkdir(parents=True, exist_ok=True)
-    df.to_csv(csv_path, index=False)
-
-
-def build_quick_file_list() -> list[str]:
-    return [
-        "mode1_normal_50.xlsx",
-        "mode1_normal_500.xlsx",
-        "faults/mode1_1_1.xlsx",
-    ]
-
-
-def build_eda_file_list() -> list[str]:
-    files = ["mode1_normal_50.xlsx", "mode1_normal_500.xlsx"]
-    selected_faults = EASY_FAULTS + MEDIUM_FAULTS + HARD_FAULTS
-    for fault_id in selected_faults:
-        files.append(f"faults/mode1_{fault_id}_1.xlsx")
-    return files
-
-
-def build_all_faults_file_list() -> list[str]:
-    files = ["mode1_normal_50.xlsx", "mode1_normal_500.xlsx"]
-    for fault_id in range(1, 22):
-        for batch_id in range(1, 6):
-            files.append(f"faults/mode1_{fault_id}_{batch_id}.xlsx")
-    return files
+def select_file_list(split: str) -> list[str]:
+    if split == "train":
+        return TRAIN_FILES
+    if split == "test":
+        return TEST_FILES
+    return TRAIN_FILES + TEST_FILES
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Download Tennessee Eastman dataset files.")
-    parser.add_argument(
-        "--profile",
-        type=str,
-        choices=["quick", "eda", "all"],
-        default="quick",
-        help="quick: normals (50h, 500h) + fault 1; eda: normals + mixed easy/medium/hard set; all: normals + all 21 faults x 5 batches.",
+    parser = argparse.ArgumentParser(
+        description="Download the Rieth et al. (2017) Tennessee Eastman RData files from Harvard Dataverse."
     )
     parser.add_argument(
-        "--to-csv",
-        action="store_true",
-        help="Also convert downloaded .xlsx files to .csv in data/preprocessed/.",
+        "--split",
+        type=str,
+        choices=["train", "test", "all"],
+        default="all",
+        help="train: FaultFree+Faulty training; test: FaultFree+Faulty testing; all: both splits.",
     )
     parser.add_argument(
         "--raw-dir",
         type=Path,
         default=project_root() / "data" / "raw",
-        help="Output directory for downloaded raw files.",
+        help="Output directory for downloaded .RData files.",
     )
     parser.add_argument(
-        "--preprocessed-dir",
-        type=Path,
-        default=project_root() / "data" / "preprocessed",
-        help="Output directory for converted CSV files.",
+        "--force",
+        action="store_true",
+        help="Re-download even if the destination file already exists.",
     )
     return parser.parse_args()
 
 
-def select_file_list(profile: str) -> list[str]:
-    if profile == "quick":
-        return build_quick_file_list()
-    if profile == "eda":
-        return build_eda_file_list()
-    return build_all_faults_file_list()
-
-
 def main() -> None:
     args = parse_args()
-    file_list = select_file_list(args.profile)
+    file_list = select_file_list(args.split)
 
-    print(f"Profile: {args.profile}")
-    print(f"Downloading {len(file_list)} file(s) from Tennessee Eastman public repository...")
+    print(f"Split: {args.split}")
     print(f"Raw output directory: {args.raw_dir}")
-    if args.to_csv:
-        print(f"Preprocessed output directory: {args.preprocessed_dir}")
 
     downloaded = 0
-    for relative_path in file_list:
-        source_url = f"{BASE_URL}/{relative_path}"
-        destination = args.raw_dir / relative_path
-
-        try:
-            download_file(source_url, destination)
-            downloaded += 1
-            print(f"[OK] {relative_path}")
-        except Exception as exc:
-            print(f"[FAIL] {relative_path}: {exc}")
+    for filename in file_list:
+        destination = args.raw_dir / filename
+        if destination.exists() and not args.force:
+            print(f"[SKIP] {filename} (already exists)")
             continue
 
-        if args.to_csv:
-            csv_relative = Path(relative_path).with_suffix(".csv")
-            csv_destination = args.preprocessed_dir / csv_relative
-            try:
-                convert_xlsx_to_csv(destination, csv_destination)
-                print(f"[CSV] {csv_relative}")
-            except Exception as exc:
-                print(f"[CSV-FAIL] {csv_relative}: {exc}")
+        try:
+            download_file(DATAVERSE_FILES[filename], destination)
+            downloaded += 1
+            print(f"[OK] {filename}")
+        except Exception as exc:
+            print(f"[FAIL] {filename}: {exc}")
 
     print(f"Finished. Downloaded {downloaded}/{len(file_list)} file(s).")
 

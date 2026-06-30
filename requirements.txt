@@ -8,3 +8,4 @@ ipykernel>=6.29
 openpyxl>=3.1
 PyYAML>=6.0
 pyarrow>=17.0
+pyreadr>=0.5

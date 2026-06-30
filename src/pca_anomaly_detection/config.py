@@ -60,3 +60,13 @@ def apply_column_name_map(df: pd.DataFrame, column_map: dict[str, str]) -> pd.Da
     """Return a DataFrame copy with columns renamed according to mapping."""
 
     return df.rename(columns=column_map, errors="ignore")
+
+
+def load_fault_description_map(config_path: str | Path | None = None) -> dict[int, str]:
+    """Return faultNumber -> fault_description mapping from config.yaml (fault_description_map section)."""
+
+    config = load_project_config(config_path)
+    fault_map = config.get("fault_description_map", {})
+    if not isinstance(fault_map, dict):
+        raise ValueError("'fault_description_map' must be a mapping in config.yaml")
+    return {int(k): str(v) for k, v in fault_map.items()}
