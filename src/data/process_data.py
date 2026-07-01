@@ -10,9 +10,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 RDATA_FILES = [
     "TEP_FaultFree_Training.RData",
-    "TEP_Faulty_Training.RData",
-    "TEP_FaultFree_Testing.RData",
-    "TEP_Faulty_Testing.RData",
+    "TEP_Faulty_Training.RData"
 ]
 
 
@@ -62,10 +60,15 @@ def parse_args() -> argparse.Namespace:
         help="Directory containing the downloaded .RData files.",
     )
     parser.add_argument(
-        "--preprocessed-dir",
+        "--processed-dir",
         type=Path,
         default=PROJECT_ROOT / "data" / "preprocessed",
         help="Directory where the .feather output is written.",
+    )
+    parser.add_argument(
+        "--keep-raw",
+        action="store_true",
+        help="Keep the original .RData file after conversion (default: delete it).",
     )
     return parser.parse_args()
 
@@ -76,11 +79,15 @@ def main() -> None:
     if not rdata_path.exists():
         raise FileNotFoundError(f"Missing RData file: {rdata_path}")
 
-    out_path = args.preprocessed_dir / Path(args.file).with_suffix(".feather").name
+    out_path = args.processed_dir / Path(args.file).with_suffix(".feather").name
 
     print(f"Reading: {rdata_path}")
     shape = convert_one(rdata_path, out_path)
     print(f"Saved: {out_path} -> shape={shape}")
+
+    if not args.keep_raw:
+        rdata_path.unlink()
+        print(f"Deleted: {rdata_path}")
 
 
 if __name__ == "__main__":
