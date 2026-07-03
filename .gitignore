@@ -39,3 +39,6 @@ results/figures/*
 
 # References
 references/*.pdf
+
+# WMECAI paper (LaTeX build folder, not versioned)
+docs/WMECAI/

@@ -1,5 +1,13 @@
 # Detecção de Anomalias via PCA — Tennessee Eastman Process
 
+![Status](https://img.shields.io/badge/status-conclu%C3%ADdo-brightgreen)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue?logo=python&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?logo=numpy&logoColor=white)
+![pandas](https://img.shields.io/badge/pandas-150458?logo=pandas&logoColor=white)
+![scikit-learn](https://img.shields.io/badge/scikit--learn-F7931E?logo=scikit-learn&logoColor=white)
+![Jupyter](https://img.shields.io/badge/Jupyter-F37626?logo=jupyter&logoColor=white)
+![License: MIT](https://img.shields.io/badge/license-MIT-yellow.svg)
+
 Projeto final da disciplina **Fundamentos da Matemática Aplicada** — ICMC/USP São Carlos.
 
 **Objetivo:** Demonstrar a aplicação de PCA para detecção de anomalias em dados multivariados do Processo Tennessee Eastman (TEP), usando a decomposição espectral da matriz de covariância como fundamento matemático.
