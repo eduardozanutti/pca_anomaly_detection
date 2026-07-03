@@ -12,7 +12,7 @@
 | **I** | Reynaldo | Introdução | Título, Seção 1 (Dataset) |
 | **II** | Victor | Metodologia | Seções 2 e 2b (PCA, Espectral, SPE, Interpretação Geométrica) |
 | **III** | Eduardo | Resultados | Seções 3–6 (Treino, Detecção, ROC, Visualizações) |
-| **IV** | Fábio | Conclusões | Seção 7 (Síntese, Limitações, T²) |
+| **IV** | Fábio | Conclusões | Seção 7 (Síntese, Limitações, Trabalhos Futuros) |
 
 ---
 
@@ -59,7 +59,7 @@
 3. **IDV(1) — falha detectável:** SPE ultrapassa o threshold logo após a amostra 20. FDR alta.
 4. **IDV(3) — falha difícil:** SPE permanece abaixo do threshold. FDR baixa. Por quê? A falha fica dentro do subespaço normal.
 5. **Curva ROC:** AUC varia com $\alpha$. Sensibilidade ao número de componentes.
-6. **Visualizações:** séries temporais mostrando a mudança no processo; scatter 2D (PC1 × PC2) com elipse T² mostrando geometricamente a diferença entre IDV(1) e IDV(3); 3D interativo (Plotly).
+6. **Visualizações:** séries temporais mostrando a mudança no processo; scatter 2D (PC1 × PC2) mostrando geometricamente a diferença entre IDV(1) e IDV(3); 3D interativo (Plotly).
 
 **Mensagem-chave:** o gráfico PC1 × PC2 é o argumento visual central — mostra por que IDV(1) é detectada (sai da elipse) e IDV(3) não (fica dentro).
 
@@ -74,12 +74,12 @@
 1. **Síntese:**
    - IDV(1): alta FDR, detecção rápida após a introdução da falha
    - IDV(3): baixa FDR, limitação conhecida na literatura
-2. **Por que o SPE falha para IDV(3)?** A falha se manifesta dentro do subespaço $\mathcal{S}_k$ — o erro de reconstrução é insensível.
-3. **Extensão natural — T² de Hotelling:** $T^2(x) = x^T V_k \Lambda_k^{-1} V_k^T x$ mede desvios dentro do subespaço. SPE + T² cobrem os dois tipos de falha.
+2. **Por que o SPE falha para IDV(3)?** A falha se manifesta dentro do subespaço $\mathcal{S}_k$ — o erro de reconstrução é insensível. Essa limitação decorre da natureza **linear** do PCA: $\mathcal{S}_k$ é sempre um hiperplano.
+3. **Trabalhos futuros — autoencoders:** Spina et al. (2024) comparam PCA com arquiteturas de autoencoders (AE, VAE, DAE) no mesmo benchmark TEP, com metodologia semelhante (SPE + AUC). Para a Falha 3, o PCA tem o menor AUC (0,718) entre os métodos comparados, enquanto os autoencoders alcançam até 0,763 — evidência de que uma projeção não linear captura parte do que o PCA deixa passar.
 4. **Mensagens-chave:**
    - PCA não é só redução de dimensionalidade — é monitoramento estatístico fundamentado em álgebra linear
    - O método é semi-supervisionado: treina apenas com dados normais
-   - SPE e T² são complementares
+   - A limitação do SPE para falhas "internas" ao subespaço motiva extensões não lineares (autoencoders)
    - Baixo custo computacional, alta interpretabilidade
 
 ---
@@ -98,9 +98,9 @@
 | 10 | SPE ao longo do tempo — IDV(1) vs IDV(3) | Eduardo |
 | 11 | FDR e FAR — tabela de resultados | Eduardo |
 | 12 | Curva ROC — sensibilidade ao número de componentes | Eduardo |
-| 13 | Scatter PC1×PC2 com elipse T² | Eduardo |
+| 13 | Scatter PC1×PC2 — nuvem normal vs. IDV(1) vs. IDV(3) | Eduardo |
 | 14 | Síntese e limitação do SPE | Fábio |
-| 15 | T² de Hotelling e trabalhos futuros | Fábio |
+| 15 | Trabalhos futuros — autoencoders (Spina et al., 2024) | Fábio |
 
 ---
 
@@ -115,5 +115,5 @@ Figuras principais:
 - Subplot SPE log-escala — IDV(1) vs IDV(3)
 - Curva ROC — AUC por fração de variância
 - Grid 6×3 séries temporais
-- Scatter 2D PC1×PC2 com elipse T²
+- Scatter 2D PC1×PC2 — nuvem normal vs. IDV(1) vs. IDV(3)
 - Visualização 3D Plotly (interativa, para notebook — exportar como HTML se necessário)
