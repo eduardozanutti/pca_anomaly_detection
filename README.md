@@ -95,7 +95,7 @@ Estruturado em 4 partes correspondentes à divisão da apresentação:
 | I — Introdução | Reynaldo | Dataset TEP — 52 variáveis, 21 condições, protocolo de falha |
 | II — Metodologia | Victor | Decomposição espectral $C = V\Lambda V^T$, SPE, interpretação geométrica |
 | III — Resultados | Eduardo | Treino/validação, IDV(1) vs IDV(3), curva ROC, visualizações 2D/3D |
-| IV — Conclusões | Fábio | Síntese, limitações do SPE, extensão com T² de Hotelling |
+| IV — Conclusões | Fábio | Síntese, limitações do SPE, trabalhos futuros com autoencoders |
 
 ---
 
@@ -127,4 +127,5 @@ python -X utf8 main.py --fault 1 --sim 2  # simulação 2
 
 - Downs, J.J. & Vogel, E.F. (1993). A plant-wide industrial process control problem. *Computers & Chemical Engineering*, 17(3), 245–255.
 - Rieth, C.A., Amsel, B.D., Tran, R. & Cook, M.B. (2017). Additional Tennessee Eastman Process Simulation Data for Anomaly Detection Evaluation. Harvard Dataverse. doi:10.7910/DVN/6C3JR1
+- Spina, D.E., Campos, L.F.O., Arruda, W.F., Melo, A., Alves, M.F.S., Rabello, G.L., Anzai, T.K. & Pinto, J.C. (2024). Comparison of autoencoder architectures for fault detection in industrial processes. *Digital Chemical Engineering*, 12, 100162. doi:10.1016/j.dche.2024.100162
 - Nonato, L.G. — Material da disciplina: Autovalores, Autovetores e PCA. ICMC/USP São Carlos.

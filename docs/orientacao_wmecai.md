@@ -10,7 +10,7 @@
 
 ## Resumo
 
-Este trabalho apresenta a aplicação de Análise de Componentes Principais (PCA) para detecção de anomalias em processos industriais multivariados, explorando a decomposição espectral da matriz de covariância como fundamento matemático. O método é avaliado no dataset Tennessee Eastman Process (TEP), benchmark clássico da literatura de monitoramento de processos, com 52 variáveis de processo e 20 modos de falha catalogados. O detector é treinado exclusivamente em dados de operação normal e utiliza o índice Squared Prediction Error (SPE) como estatística de monitoramento, com limiar calibrado em conjunto de validação independente. Os experimentos demonstram alta taxa de detecção para falhas que se manifestam fora do subespaço principal (IDV(1), FDR > 95%) e ilustram geometricamente a limitação do SPE para falhas que permanecem dentro do subespaço (IDV(3), FDR < 5%), motivando o uso complementar do índice T² de Hotelling.
+Este trabalho apresenta a aplicação de Análise de Componentes Principais (PCA) para detecção de anomalias em processos industriais multivariados, explorando a decomposição espectral da matriz de covariância como fundamento matemático. O método é avaliado no dataset Tennessee Eastman Process (TEP), benchmark clássico da literatura de monitoramento de processos, com 52 variáveis de processo e 20 modos de falha catalogados. O detector é treinado exclusivamente em dados de operação normal e utiliza o índice Squared Prediction Error (SPE) como estatística de monitoramento, com limiar calibrado em conjunto de validação independente. Os experimentos demonstram alta taxa de detecção para falhas que se manifestam fora do subespaço principal (IDV(1), FDR > 95%) e ilustram geometricamente a limitação estrutural do SPE para falhas que permanecem dentro do subespaço (IDV(3), FDR < 5%), motivando, como trabalho futuro, a substituição da projeção linear do PCA por arquiteturas não lineares de autoencoders.
 
 ---
 
@@ -108,10 +108,8 @@ Para IDV(1), o SPE ultrapassa o limiar consistentemente nas primeiras amostras p
 
 A projeção das trajetórias no espaço PC1 × PC2 revela a causa geométrica da diferença:
 
-- **IDV(1):** os pontos pós-falha deslocam-se para fora da elipse de controle T² (que delimita a região normal com 99% de confiança), gerando alto SPE.
-- **IDV(3):** os pontos pós-falha permanecem dentro da elipse, indicando que a falha se manifesta inteiramente dentro do subespaço $\mathcal{S}_k$ — o SPE é estruturalmente insensível a esse tipo de desvio.
-
-A elipse de controle decorre do Teorema Espectral: a equação $\mathbf{y}^T \Lambda_k^{-1} \mathbf{y} = \chi^2_{0{,}99}(k)$ define um elipsoide cujos eixos são os autovetores $v_i$ e cujos comprimentos são $\sqrt{\chi^2_{0,99}(k) \cdot \lambda_i}$.
+- **IDV(1):** os pontos pós-falha deslocam-se para fora da nuvem de operação normal nesse plano, gerando alto SPE.
+- **IDV(3):** os pontos pós-falha permanecem misturados à nuvem normal, indicando que a falha se manifesta inteiramente dentro do subespaço $\mathcal{S}_k$ — o SPE, que mede apenas a distância a esse subespaço, é estruturalmente insensível a esse tipo de desvio.
 
 ### 4.4 Análise de Sensibilidade — Curva ROC
 
@@ -119,13 +117,13 @@ A variação de $\alpha \in \{0{,}1; 0{,}2; \ldots; 0{,}9\}$ mostra que a AUC so
 
 ---
 
-## 5. Limitações e Extensão com T² de Hotelling
+## 5. Limitações e Trabalhos Futuros
 
-O SPE captura apenas desvios **fora** do subespaço principal. Falhas que produzem deslocamentos **dentro** de $\mathcal{S}_k$ — como IDV(3) — requerem o índice complementar **T² de Hotelling**:
+O SPE captura apenas desvios que projetam a observação **para fora** do subespaço principal $\mathcal{S}_k$. Falhas cujo efeito se confunde com a variabilidade normal **dentro** de $\mathcal{S}_k$ — como IDV(3) — permanecem, por construção, invisíveis a essa estatística. Essa limitação é uma consequência direta da natureza **linear** do PCA: o subespaço $\mathcal{S}_k$ é sempre um hiperplano, incapaz de representar relações não lineares entre as variáveis de processo.
 
-$$T^2(\mathbf{x}) = \mathbf{x}^T V_k \Lambda_k^{-1} V_k^T \mathbf{x}.$$
+Spina et al. [4] comparam sistematicamente diferentes arquiteturas de *autoencoders* (AE, Deep AE, VAE, DAE e Deep DAE) com o PCA no mesmo benchmark TEP, adotando metodologia semelhante à empregada aqui — treino apenas com dados normais, SPE como estatística de monitoramento e área sob a curva ROC (AUC) como métrica de comparação. Para a Falha 3 (IDV(3)), a mesma falha difícil analisada neste trabalho, o PCA obtém o menor AUC entre os métodos comparados (0,718), enquanto os autoencoders alcançam valores superiores (até 0,763), evidenciando que a extração de características não lineares captura parte da estrutura da falha que o subespaço linear do PCA não representa.
 
-O T² mede a distância de Mahalanobis no espaço comprimido, sendo sensível a desvios da média dentro do subespaço. A combinação SPE + T² cobre os dois tipos fundamentais de anomalia e é o padrão adotado na literatura de Monitoramento Estatístico de Processos [1].
+Esse resultado aponta uma extensão natural do presente trabalho: substituir a projeção linear $V_k V_k^T$ por um *autoencoder* não linear, preservando a mesma lógica de treino semi-supervisionado e o mesmo índice SPE como estatística de monitoramento, porém com um encoder/decoder capaz de representar desvios que hoje permanecem ocultos dentro do subespaço principal do PCA.
 
 ---
 
@@ -143,4 +141,6 @@ Demonstramos que o PCA fundamentado na decomposição espectral da matriz de cov
 
 [3] Rieth, C.A., Amsel, B.D., Tran, R. & Cook, M.B. (2017). Additional Tennessee Eastman Process Simulation Data for Anomaly Detection Evaluation. Harvard Dataverse. doi:10.7910/DVN/6C3JR1
 
-[4] Nonato, L.G. — Material da disciplina: Autovalores, Autovetores e PCA. ICMC/USP São Carlos, 2025.
+[4] Spina, D.E., Campos, L.F.O., Arruda, W.F., Melo, A., Alves, M.F.S., Rabello, G.L., Anzai, T.K. & Pinto, J.C. (2024). Comparison of autoencoder architectures for fault detection in industrial processes. *Digital Chemical Engineering*, 12, 100162. doi:10.1016/j.dche.2024.100162
+
+[5] Nonato, L.G. — Material da disciplina: Autovalores, Autovetores e PCA. ICMC/USP São Carlos, 2025.
